@@ -1,5 +1,6 @@
 class PraxisOSCRootMaker {
     PrintWriter oscRoot;
+    int propertyCount = 0;
 
     public PraxisOSCRootMaker(String _rootName){
         oscRoot = createWriter(_rootName);

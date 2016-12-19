@@ -8,7 +8,6 @@ PrintWriter atLines;
 int currentDepth = 0;
 ArrayList<String> currentPath;
 String previousLine = "";
-int propertyCount = 0;
 
 DeviceMaker iScoreDevice;
 PraxisOSCRootMaker oscRoot;
@@ -33,6 +32,8 @@ void parseRoot(String _file){
     String _lines[] = loadStrings(_file);
     String _combine = "";
     for(String _line : _lines){
+        atLines.println(_line);
+
         if(_line.contains("@")){
             if(!_line.contains(";")){
                 _combine = _line;
@@ -50,7 +51,6 @@ void parseRoot(String _file){
 }
 
 void processAtLine(String _line){
-    atLines.println(_line);
     int _depth = checkDepth(_line);
     if(_depth != currentDepth){
         if(_depth > currentDepth){
