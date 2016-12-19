@@ -6,6 +6,7 @@ String pxrFile = "/home/mxd/PraxisProjects/userZeroLive/uzlive_video.pxr";
 
 PrintWriter atLines;
 int currentDepth = 0;
+int codeSectionDepth = 0;
 ArrayList<String> currentPath;
 String previousLine = "";
 
@@ -32,7 +33,13 @@ void parseRoot(String _file){
     String _lines[] = loadStrings(_file);
     String _combine = "";
     for(String _line : _lines){
-        atLines.println(_line);
+        //
+        if(_line.contains("  .code ")){
+            codeSectionDepth = currentDepth+2;
+        }
+        else if(_line.equals("\"")){
+            codeSectionDepth = 0;
+        }
 
         if(_line.contains("@")){
             if(!_line.contains(";")){
@@ -52,15 +59,21 @@ void parseRoot(String _file){
 
 void processAtLine(String _line){
     int _depth = checkDepth(_line);
+
+    if(codeSectionDepth != 0) _depth = codeSectionDepth;
+    // _depth /= 2;
+    atLines.println(_depth+"_"+_line);
     if(_depth != currentDepth){
         if(_depth > currentDepth){
             currentPath.add(getPath(previousLine));
         }
         else if(_depth < currentDepth){
-            currentPath.remove(currentPath.size() -1 );
+            for(int i = 0; i < (currentDepth - _depth)/2; i++)
+                currentPath.remove(currentPath.size() -1 );
         }
         currentDepth = _depth;
     }
+    // add the property
     if(_line.contains("@P(") && !_line.contains("@ReadOnly")){
         addProperty(_line.trim(), getCurrentPath());
     }
